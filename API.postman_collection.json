@@ -1,0 +1,161 @@
+{
+  "info": {
+    "name": "Coffee Orders API",
+    "_postman_id": "coffee-orders-api-collection",
+    "description": "Колекція запитів для тестування бекенду кав'ярні (React + Express + MongoDB).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "http://localhost:4000/health", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["health"] }
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "auth", "login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Get All Menu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:4000/api/menu", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "menu"] }
+          }
+        },
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Latte\",\n  \"description\": \"Classic latte\",\n  \"price\": 2.5,\n  \"category\": \"coffee\"\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/menu", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "menu"] }
+          }
+        },
+        {
+          "name": "Get Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:4000/api/menu/{{menuId}}", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "menu", "{{menuId}}"] }
+          }
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 3.0\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/menu/{{menuId}}", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "menu", "{{menuId}}"] }
+          }
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "http://localhost:4000/api/menu/{{menuId}}", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "menu", "{{menuId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Ivan\",\n  \"customerPhone\": \"+380501234567\",\n  \"items\": [\n    { \"menuId\": \"{{menuId}}\", \"quantity\": 2 }\n  ]\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/orders", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "List Orders (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "http://localhost:4000/api/orders", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "Get Order by ID (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "http://localhost:4000/api/orders/{{orderId}}", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "orders", "{{orderId}}"] }
+          }
+        },
+        {
+          "name": "Update Order Status (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"done\"\n}"
+            },
+            "url": { "raw": "http://localhost:4000/api/orders/{{orderId}}/status", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["api", "orders", "{{orderId}}", "status"] }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "token", "value": "" },
+    { "key": "menuId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ]
+}
