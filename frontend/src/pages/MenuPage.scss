@@ -1,0 +1,56 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.menu-page {
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .menu-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .menu-item {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #555;
+      margin: 0.25rem 0;
+    }
+
+    .price {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: $primary-color;
+      margin: 0.5rem 0;
+    }
+
+    button {
+      @include button($primary-color, $primary-hover);
+      margin-top: auto;
+    }
+  }
+}
+

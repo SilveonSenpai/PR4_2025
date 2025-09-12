@@ -8,6 +8,7 @@ import {
 import { adminAuth } from '../middleware/auth';
 import { body } from 'express-validator';
 import { validate } from '../utils/validators';
+import Order from '../models/Order';
 
 const router = Router();
 
@@ -24,6 +25,16 @@ router.post(
   validate,
   createOrder
 );
+// public: історія замовлень по телефону
+router.get('/by-phone/:phone', async (req, res) => {
+  try {
+    const phone = req.params.phone;
+    const orders = await Order.find({ customerPhone: phone }).populate("items.menuId");
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Помилка при отриманні замовлень" });
+  }
+});
 
 // admin
 router.get('/', adminAuth, listOrders);

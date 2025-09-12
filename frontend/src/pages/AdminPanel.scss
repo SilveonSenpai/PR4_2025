@@ -1,0 +1,47 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .panel-section {
+    @include card;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+  }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .order-card {
+      @include card;
+      padding: 12px;
+
+      h4 {
+        margin: 0 0 6px;
+      }
+
+      .status-select {
+        margin-top: 8px;
+        select {
+          padding: 6px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+      }
+    }
+  }
+}

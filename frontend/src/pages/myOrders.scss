@@ -1,0 +1,79 @@
+.my-orders {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #4cafef;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+
+      &:hover {
+        background: #3a9ed6;
+      }
+    }
+  }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .order-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 1.2rem;
+      }
+
+      ul {
+        margin-top: 8px;
+        padding-left: 20px;
+        font-size: 0.95rem;
+      }
+
+      .status {
+        margin-top: 10px;
+        font-weight: bold;
+
+        &.new {
+          color: #ff9800;
+        }
+        &.in_progress {
+          color: #2196f3;
+        }
+        &.done {
+          color: #4caf50;
+        }
+      }
+    }
+  }
+}

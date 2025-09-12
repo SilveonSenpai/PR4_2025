@@ -1,0 +1,58 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.cart-page {
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .cart-item {
+      @include card;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .info {
+        h3 {
+          margin: 0;
+        }
+        p {
+          margin: 0.25rem 0;
+          color: #555;
+        }
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+
+        button {
+          @include button($primary-color, $secondary-color);
+          padding: 6px 10px;
+        }
+      }
+    }
+  }
+
+  .checkout {
+    margin-top: 20px;
+    text-align: right;
+
+    .total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    button {
+      @include button($success-color, darken($success-color, 10%));
+    }
+  }
+}

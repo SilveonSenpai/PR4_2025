@@ -1,0 +1,36 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.header {
+  background: $dark-bg;
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  nav {
+    display: flex;
+    gap: 16px;
+
+    a,
+    button {
+      color: white;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}
