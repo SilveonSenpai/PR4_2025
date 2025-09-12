@@ -3,14 +3,14 @@
 
 body {
   font-family: $font-stack;
-  background: $bg-color; // ← сірий фон
+  background: $bg-color; 
   margin: 0;
   padding: 0;
   color: #333;
 }
 
 main {
-  max-width: 1200px; // ширше контейнер
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }

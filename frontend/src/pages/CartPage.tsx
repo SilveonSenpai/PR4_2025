@@ -32,7 +32,7 @@ const handleOrder = async () => {
       customerName: name,
       customerPhone: contact,
       items: cart.map((ci) => ({
-        menuId: ci.menuItem._id!, // ⚠️ бекенд хоче menuId
+        menuId: ci.menuItem._id!, // 
         quantity: ci.quantity,
       })),
     };

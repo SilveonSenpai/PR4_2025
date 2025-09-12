@@ -20,7 +20,7 @@ export interface MenuItem {
 export interface Order {
   _id?: string;
   items: {
-    menuId: string | MenuItem; // ← тепер може бути рядок або об’єкт
+    menuId: string | MenuItem; 
     quantity: number;
   }[];
   customerName: string;

@@ -37,5 +37,5 @@ OrderSchema.pre<IOrder>('save', function(next) {
   this.totalPrice = this.items.reduce((sum, it) => sum + (it.price * it.quantity), 0);
   next();
 });
-
+// meow
 export default mongoose.model<IOrder>('Order', OrderSchema);
