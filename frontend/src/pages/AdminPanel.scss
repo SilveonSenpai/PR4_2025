@@ -2,44 +2,253 @@
 @import "../styles/mixins";
 
 .admin-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  @include container;
+  padding: $spacing-xl 0;
 
-  h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .panel-section {
-    @include card;
-
-    h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
+  .panel-header {
+    margin-bottom: $spacing-xl;
+    
+    h1 {
+      font-size: 2rem;
+      color: $primary-color;
+      margin-bottom: $spacing-md;
     }
   }
 
-  .orders-list {
+  .tabs {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
+    background: rgba($secondary-color, 0.3);
+    padding: $spacing-sm;
+    border-radius: 12px;
 
+    button {
+      @include button-base;
+      padding: $spacing-md $spacing-xl;
+      background: transparent;
+      color: $primary-color;
+      font-weight: 600;
+      flex: 1;
+      max-width: 200px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba($primary-color, 0.1);
+      }
+
+      &.active {
+        background: $primary-color;
+        color: $secondary-color;
+      }
+    }
+  }
+
+  .menu-section {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: $spacing-xl;
+
+    .item-form {
+      @include card;
+      padding: $spacing-xl;
+      position: sticky;
+      top: $spacing-xl;
+      height: fit-content;
+
+      h3 {
+        font-size: 1.3rem;
+        margin-bottom: $spacing-lg;
+        color: $primary-color;
+        border-bottom: 2px solid $secondary-color;
+        padding-bottom: $spacing-sm;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-sm;
+
+          label {
+            font-weight: 500;
+            color: $primary-color;
+          }
+
+          input, textarea {
+            padding: $spacing-md;
+            border: 2px solid $secondary-color;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+
+            &:focus {
+              outline: none;
+              border-color: $accent-color;
+              box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+            }
+          }
+
+          textarea {
+            min-height: 120px;
+            resize: vertical;
+          }
+        }
+
+        .form-actions {
+          display: flex;
+          gap: $spacing-md;
+          margin-top: $spacing-md;
+
+          button {
+            @include button-base;
+            flex: 1;
+            padding: $spacing-md;
+            font-size: 1rem;
+
+            &[type="submit"] {
+              background: $accent-color;
+              color: white;
+
+              &:hover {
+                background: darken($accent-color, 10%);
+              }
+            }
+
+            &.cancel {
+              background: $secondary-color;
+              color: $primary-color;
+
+              &:hover {
+                background: darken($secondary-color, 10%);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .menu-items {
+      @include card;
+      padding: $spacing-lg;
+
+      .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-lg;
+        padding-bottom: $spacing-sm;
+        border-bottom: 2px solid $secondary-color;
+
+        h3 {
+          font-size: 1.3rem;
+          color: $primary-color;
+          margin: 0;
+        }
+      }
+
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: $spacing-md;
+      }
+
+      .menu-item {
+        @include card;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        .item-image {
+          height: 180px;
+          width: 100%;
+          object-fit: cover;
+        }
+
+        .item-content {
+          padding: $spacing-md;
+
+          h4 {
+            margin: 0 0 $spacing-sm;
+            color: $primary-color;
+          }
+
+          .price {
+            color: $accent-color;
+            font-weight: 600;
+          }
+        }
+
+        .item-actions {
+          display: flex;
+          gap: $spacing-sm;
+          padding: $spacing-sm;
+          background: rgba($secondary-color, 0.3);
+
+          button {
+            @include button-base;
+            flex: 1;
+            padding: $spacing-sm;
+            font-size: 0.9rem;
+
+            &.edit {
+              background: $primary-color;
+              color: white;
+            }
+
+            &.delete {
+              background: $error-color;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .orders-section {
     .order-card {
       @include card;
-      padding: 12px;
+      margin-bottom: $spacing-md;
+      padding: $spacing-lg;
 
-      h4 {
-        margin: 0 0 6px;
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-md;
+
+        h3 {
+          margin: 0;
+          color: $primary-color;
+        }
+      }
+
+      .order-details {
+        margin-bottom: $spacing-md;
+        
+        p {
+          margin: $spacing-sm 0;
+          color: rgba(0, 0, 0, 0.7);
+        }
       }
 
       .status-select {
-        margin-top: 8px;
         select {
-          padding: 6px;
+          padding: $spacing-sm $spacing-md;
+          border: 2px solid $secondary-color;
           border-radius: 6px;
-          border: 1px solid #ccc;
+          font-size: 1rem;
+          background: white;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+          }
         }
       }
     }

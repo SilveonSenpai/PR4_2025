@@ -1,12 +1,21 @@
-$primary-color: #4cafef;
-$primary-hover: #3a9ed6;
-$secondary-color: #3a9ed6;
+// Colors
+$primary-color: #6a4e42;
+$secondary-color: #f1e4d3;
+$accent-color: #d2691e;
 $success-color: #4caf50;
-$warning-color: #ff9800;
-$danger-color: #f44336;
-$dark-bg: #2d2d2d;
-$light-bg: #f0f2f5;
-$bg-color: #f0f2f5;
+$error-color: #f44336;
 $card-bg: #ffffff;
 
-$font-stack: "Segoe UI", Roboto, sans-serif;
+// Typography
+$font-main: "Inter", sans-serif;
+$font-size-base: 16px;
+
+// Layout
+$container-max-width: 1200px;
+$container-padding: 1.5rem;
+
+// Spacing
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Базовий інстанс
 const api = axios.create({
-  baseURL: "http://localhost:4000/api", // ⚠️ заміни на свій бекенд, якщо інший порт
+  baseURL: "http://localhost:4000/api", 
   headers: {
     "Content-Type": "application/json",
   },

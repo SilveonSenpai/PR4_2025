@@ -1,0 +1,98 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.admin-orders {
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  .order-card {
+    @include card;
+    padding: $spacing-lg;
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-md;
+
+      .customer-info {
+        h3 {
+          font-size: 1.2rem;
+          color: $primary-color;
+          margin-bottom: $spacing-sm;
+        }
+
+        .phone {
+          color: rgba($primary-color, 0.7);
+          font-size: 0.9rem;
+        }
+      }
+
+      .order-date {
+        font-size: 0.9rem;
+        color: rgba($primary-color, 0.6);
+      }
+    }
+
+    .items-list {
+      background: rgba($secondary-color, 0.3);
+      border-radius: 8px;
+      padding: $spacing-md;
+      margin: $spacing-md 0;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        padding: $spacing-sm 0;
+        border-bottom: 1px solid rgba($primary-color, 0.1);
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    .status-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: $spacing-md;
+
+      .status-label {
+        font-weight: 600;
+        color: $primary-color;
+      }
+
+      select {
+        padding: $spacing-sm $spacing-md;
+        border: 2px solid $secondary-color;
+        border-radius: 6px;
+        background: white;
+        color: $primary-color;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: $accent-color;
+        }
+
+        &.new { color: $primary-color; }
+        &.in_progress { color: $accent-color; }
+        &.done { color: $success-color; }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: $spacing-xl;
+    background: rgba($secondary-color, 0.3);
+    border-radius: 12px;
+    color: $primary-color;
+    font-size: 1.1rem;
+  }
+}

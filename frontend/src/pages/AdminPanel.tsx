@@ -15,18 +15,28 @@ export const AdminPanelPage = () => {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [activeTab, setActiveTab] = useState<"menu" | "orders">("menu");
+  const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState<MenuItem>({
+  const initialForm = {
     name: "",
     description: "",
     price: 0,
     imageUrl: "",
-  });
+  };
+
+  const [form, setForm] = useState<MenuItem>(initialForm);
 
   const fetchMenu = async () => {
     if (!token) return;
-    const data = await getMenu();
-    setMenu(data);
+    setLoading(true);
+    try {
+      const data = await getMenu();
+      setMenu(data);
+    } catch (error) {
+      console.error("Failed to fetch menu:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -36,16 +46,22 @@ export const AdminPanelPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+    setLoading(true);
 
-    if (editingItem) {
-      await updateMenuItem(editingItem._id!, form, token);
-    } else {
-      await createMenuItem(form, token);
+    try {
+      if (editingItem) {
+        await updateMenuItem(editingItem._id!, form, token);
+      } else {
+        await createMenuItem(form, token);
+      }
+      setForm(initialForm);
+      setEditingItem(null);
+      await fetchMenu();
+    } catch (error) {
+      console.error("Failed to save item:", error);
+    } finally {
+      setLoading(false);
     }
-
-    setForm({ name: "", description: "", price: 0, imageUrl: "" });
-    setEditingItem(null);
-    fetchMenu();
   };
 
   const handleEdit = (item: MenuItem) => {
@@ -54,111 +70,144 @@ export const AdminPanelPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!token) return;
-    await deleteMenuItem(id, token);
-    fetchMenu();
+    if (!token || !window.confirm("Видалити цей товар?")) return;
+    setLoading(true);
+    try {
+      await deleteMenuItem(id, token);
+      await fetchMenu();
+    } catch (error) {
+      console.error("Failed to delete item:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingItem(null);
+    setForm(initialForm);
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Адмін-панель</h1>
-
-      <div className="flex space-x-4 mb-6">
-        <button
-          onClick={() => setActiveTab("menu")}
-          className={`px-4 py-2 rounded ${
-            activeTab === "menu" ? "bg-blue-600 text-white" : "bg-gray-200"
-          }`}
-        >
-          Меню
-        </button>
-        <button
-          onClick={() => setActiveTab("orders")}
-          className={`px-4 py-2 rounded ${
-            activeTab === "orders" ? "bg-blue-600 text-white" : "bg-gray-200"
-          }`}
-        >
-          Замовлення
-        </button>
+    <div className="admin-panel">
+      <div className="panel-header">
+        <h1>Адмін-панель</h1>
+        <div className="tabs">
+          <button
+            onClick={() => setActiveTab("menu")}
+            className={activeTab === "menu" ? "active" : ""}
+          >
+            Управління меню
+          </button>
+          <button
+            onClick={() => setActiveTab("orders")}
+            className={activeTab === "orders" ? "active" : ""}
+          >
+            Замовлення
+          </button>
+        </div>
       </div>
 
       {activeTab === "menu" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <form onSubmit={handleSubmit} className="bg-gray-100 p-4 rounded">
-            <h2 className="text-lg font-semibold mb-2">
-              {editingItem ? "Редагувати товар" : "Додати новий товар"}
-            </h2>
-            <input
-              type="text"
-              placeholder="Назва"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full mb-2 p-2 border rounded"
-              required
-            />
-            <textarea
-              placeholder="Опис"
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="number"
-              placeholder="Ціна"
-              value={form.price}
-              onChange={(e) =>
-                setForm({ ...form, price: Number(e.target.value) })
-              }
-              className="w-full mb-2 p-2 border rounded"
-              required
-            />
-            <input
-              type="text"
-              placeholder="URL зображення"
-              value={form.imageUrl}
-              onChange={(e) =>
-                setForm({ ...form, imageUrl: e.target.value })
-              }
-              className="w-full mb-2 p-2 border rounded"
-              required
-            />
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              {editingItem ? "Оновити" : "Додати"}
-            </button>
-          </form>
-
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Список товарів</h2>
-            {menu.map((item) => (
-              <div
-                key={item._id}
-                className="flex items-center justify-between bg-white shadow p-3 rounded mb-2"
-              >
-                <div>
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-gray-600">{item.price} грн</p>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                  >
-                    Редагувати
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item._id!)}
-                    className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
-                  >
-                    Видалити
-                  </button>
-                </div>
+        <div className="menu-section">
+          <div className="item-form">
+            <h3>{editingItem ? "Редагувати товар" : "Додати новий товар"}</h3>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="name">Назва</label>
+                <input
+                  id="name"
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
               </div>
-            ))}
+
+              <div className="form-group">
+                <label htmlFor="description">Опис</label>
+                <textarea
+                  id="description"
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="price">Ціна</label>
+                <input
+                  id="price"
+                  type="number"
+                  value={form.price}
+                  onChange={(e) =>
+                    setForm({ ...form, price: Number(e.target.value) })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="image">URL зображення</label>
+                <input
+                  id="image"
+                  type="text"
+                  value={form.imageUrl}
+                  onChange={(e) =>
+                    setForm({ ...form, imageUrl: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="submit" disabled={loading}>
+                  {loading ? "Збереження..." : editingItem ? "Оновити" : "Додати"}
+                </button>
+                {editingItem && (
+                  <button
+                    type="button"
+                    className="cancel"
+                    onClick={handleCancel}
+                  >
+                    Скасувати
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          <div className="menu-items">
+            <div className="menu-header">
+              <h3>Список товарів</h3>
+            </div>
+            <div className="menu-grid">
+              {menu.map((item) => (
+                <div key={item._id} className="menu-item">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="item-image"
+                  />
+                  <div className="item-content">
+                    <h4>{item.name}</h4>
+                    <p>{item.description}</p>
+                    <span className="price">{item.price} грн</span>
+                  </div>
+                  <div className="item-actions">
+                    <button className="edit" onClick={() => handleEdit(item)}>
+                      Редагувати
+                    </button>
+                    <button
+                      className="delete"
+                      onClick={() => handleDelete(item._id!)}
+                    >
+                      Видалити
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : (

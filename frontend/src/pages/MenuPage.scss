@@ -2,54 +2,85 @@
 @import "../styles/mixins";
 
 .menu-page {
-  h2 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-  }
+  @include container;
 
-  .menu-list {
+  .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-lg;
+    padding: $spacing-md;
   }
 
   .menu-item {
     @include card;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
 
-    img {
+    &:hover {
+      transform: translateY(-8px);
+
+      .item-image {
+        transform: scale(1.05);
+      }
+
+      .add-to-cart {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .item-image {
+      height: 220px;
       width: 100%;
-      height: 180px;
       object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 12px;
+      border-radius: 10px 10px 0 0;
+      transition: transform 0.3s ease;
     }
 
-    h3 {
-      font-size: 1.2rem;
-      margin: 0.5rem 0;
+    .item-content {
+      padding: $spacing-md;
     }
 
-    p {
-      font-size: 0.9rem;
-      color: #555;
-      margin: 0.25rem 0;
+    .item-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: $spacing-sm;
+      color: $primary-color;
+    }
+
+    .item-description {
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: $spacing-md;
+      line-height: 1.5;
+    }
+
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
     }
 
     .price {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: $primary-color;
-      margin: 0.5rem 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $accent-color;
     }
 
-    button {
-      @include button($primary-color, $primary-hover);
-      margin-top: auto;
+    .add-to-cart {
+      @include button-base;
+      background: $accent-color;
+      color: white;
+      padding: $spacing-sm $spacing-md;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: darken($accent-color, 10%);
+      }
     }
   }
 }

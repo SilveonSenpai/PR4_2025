@@ -9,7 +9,7 @@ import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 4000;
+
 
 app.use(cors());
 app.use(express.json());
@@ -27,6 +27,5 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 // error handler (last middleware)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
+app.listen(4000, "0.0.0.0", () => console.log("Server running on port 4000"));
+

@@ -1,126 +1,144 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { createOrder } from "../services/api";
+import { Link } from "react-router-dom";
 import "./CartPage.scss";
 
 export const CartPage = () => {
-  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
+  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+  });
 
   const total = cart.reduce(
     (sum, item) => sum + item.menuItem.price * item.quantity,
     0
   );
 
-const handleOrder = async () => {
-  if (!name.trim() || !contact.trim()) {
-    setMessage("Будь ласка, заповніть усі поля!");
-    return;
-  }
+  const handleOrder = async () => {
+    if (!formData.name.trim() || !formData.phone.trim()) {
+      setMessage("Будь ласка, заповніть усі поля!");
+      return;
+    }
+    if (cart.length === 0) {
+      setMessage("Ваш кошик порожній!");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        items: cart.map((ci) => ({
+          menuId: ci.menuItem._id!, // 
+          quantity: ci.quantity,
+        })),
+      };
+
+      await createOrder(payload);
+      setMessage("✅ Замовлення успішно оформлене!");
+      clearCart();
+      setFormData({ name: "", phone: "" });
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Помилка при оформленні замовлення.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (cart.length === 0) {
-    setMessage("Ваш кошик порожній!");
-    return;
+    return (
+      <div className="cart-page">
+        <div className="cart-empty">
+          <p>Ваш кошик порожній</p>
+          <Link to="/" className="return-btn">
+            Повернутися до меню
+          </Link>
+        </div>
+      </div>
+    );
   }
-
-  try {
-    setLoading(true);
-
-    const payload = {
-      customerName: name,
-      customerPhone: contact,
-      items: cart.map((ci) => ({
-        menuId: ci.menuItem._id!, // 
-        quantity: ci.quantity,
-      })),
-    };
-
-    await createOrder(payload);
-    setMessage("✅ Замовлення успішно оформлене!");
-    clearCart();
-    setName("");
-    setContact("");
-  } catch (err) {
-    console.error(err);
-    setMessage("❌ Помилка при оформленні замовлення.");
-  } finally {
-    setLoading(false);
-  }
-};
-
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Ваш кошик</h1>
+    <div className="cart-page">
+      <div className="cart-header">
+        <h1>Кошик</h1>
+      </div>
 
-      {cart.length === 0 ? (
-        <p>Кошик порожній ☹️</p>
-      ) : (
-        <div className="space-y-4">
-          {cart.map((item) => (
-            <div
-              key={item.menuItem._id}
-              className="flex items-center justify-between bg-white shadow-md p-4 rounded-lg"
-            >
-              <div>
-                <h2 className="font-semibold">{item.menuItem.name}</h2>
-                <p className="text-gray-600">{item.menuItem.price} грн</p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="number"
-                  min={1}
-                  value={item.quantity}
-                  onChange={(e) =>
-                    updateQuantity(item.menuItem._id!, Number(e.target.value))
-                  }
-                  className="w-16 border rounded text-center"
-                />
-                <button
-                  onClick={() => removeFromCart(item.menuItem._id!)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                >
-                  Видалити
-                </button>
-              </div>
+      <div className="cart-items">
+        {cart.map((item) => (
+          <div key={item.menuItem._id} className="cart-item">
+            <img src={item.menuItem.imageUrl} alt={item.menuItem.name} />
+
+            <div className="item-details">
+              <h3>{item.menuItem.name}</h3>
+              <span className="price">{item.menuItem.price} грн</span>
             </div>
-          ))}
 
-          <div className="text-right text-xl font-bold">
-            Всього: {total} грн
+            <div className="quantity-controls">
+              <button
+                onClick={() =>
+                  updateQuantity(item.menuItem._id!, Math.max(0, item.quantity - 1))
+                }
+                aria-label="Зменшити кількість"
+              >
+                -
+              </button>
+              <span>{item.quantity}</span>
+              <button
+                onClick={() => updateQuantity(item.menuItem._id!, item.quantity + 1)}
+                aria-label="Збільшити кількість"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              className="remove-btn"
+              onClick={() => removeFromCart(item.menuItem._id!)}
+              aria-label={`Видалити ${item.menuItem.name} з кошика`}
+            >
+              ✕
+            </button>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {/* Форма замовлення */}
-      <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-inner">
-        <h2 className="text-lg font-semibold mb-2">Оформлення замовлення</h2>
-        <input
-          type="text"
-          placeholder="Ваше ім’я"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Телефон або email"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <button
-          onClick={handleOrder}
-          disabled={loading}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-        >
-          {loading ? "Відправка..." : "Оформити замовлення"}
-        </button>
-        {message && (
-          <p className="mt-2 text-center text-sm text-gray-700">{message}</p>
-        )}
+      <div className="cart-summary">
+        <div className="total">
+          <span>Загальна сума:</span>
+          <span>{total} грн</span>
+        </div>
+
+        <form onSubmit={handleOrder} className="checkout-form">
+          <input
+            type="text"
+            placeholder="Ваше ім'я"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            required
+          />
+          <input
+            type="tel"
+            placeholder="Номер телефону"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, phone: e.target.value }))
+            }
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? "Обробка..." : "Оформити замовлення"}
+          </button>
+        </form>
       </div>
     </div>
   );

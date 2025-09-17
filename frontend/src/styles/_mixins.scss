@@ -1,7 +1,15 @@
+@import "variables";
+
+@mixin container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
 @mixin card {
   background: $card-bg;
   border-radius: 10px;
-  padding: 16px;
+  padding: $spacing-md;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: 0.2s ease-in-out;
 
@@ -11,19 +19,19 @@
   }
 }
 
-@mixin button($bg, $hover) {
-  background: $bg;
-  color: white;
-  padding: 10px 16px;
+@mixin button-base {
   border: none;
   border-radius: 8px;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
   font-weight: 500;
-  transition: 0.2s;
-
+  transition: all 0.2s ease;
+  
   &:hover {
-    background: $hover;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
-
