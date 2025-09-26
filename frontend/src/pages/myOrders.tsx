@@ -58,7 +58,7 @@ export const MyOrdersPage = () => {
           {orders.map((order) => (
             <div key={order._id} className="border rounded p-4 bg-white shadow">
               <h3 className="font-bold">
-                Замовлення від {new Date(order._id?.toString().substring(0, 8) ?? "").toLocaleString()}
+                Замовлення від {new String(order.customerName?.toString().substring(0, 8) ?? "").toLocaleString()}
               </h3>
               <p>
                 Ім’я: {order.customerName} | Телефон: {order.customerPhone}

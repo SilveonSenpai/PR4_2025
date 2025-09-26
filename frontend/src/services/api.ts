@@ -66,9 +66,17 @@ export const deleteMenuItem = async (id: string, token: string) => {
   return res.data;
 };
 
-export const createOrder = async (order: Order) => {
-  const res = await api.post("/orders", order);
-  return res.data;
+export const createOrder = async (order: Omit<Order, '_id'>) => {
+  try {
+    const res = await api.post("/orders", order);
+    if (!res.data) {
+      throw new Error('No data received from server');
+    }
+    return res.data;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
 };
 
 export const getOrders = async (token: string): Promise<Order[]> => {

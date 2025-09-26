@@ -18,7 +18,9 @@ export const CartPage = () => {
     0
   );
 
-  const handleOrder = async () => {
+  const handleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+
     if (!formData.name.trim() || !formData.phone.trim()) {
       setMessage("Будь ласка, заповніть усі поля!");
       return;
@@ -35,17 +37,23 @@ export const CartPage = () => {
         customerName: formData.name,
         customerPhone: formData.phone,
         items: cart.map((ci) => ({
-          menuId: ci.menuItem._id!, // 
+          menuId: ci.menuItem._id!,
           quantity: ci.quantity,
         })),
+        status: "new" as const,
       };
 
-      await createOrder(payload);
+      const response = await createOrder(payload);
+
+      if (!response) {
+        throw new Error("Failed to create order");
+      }
+
       setMessage("✅ Замовлення успішно оформлене!");
       clearCart();
       setFormData({ name: "", phone: "" });
     } catch (err) {
-      console.error(err);
+      console.error("Order creation error:", err);
       setMessage("❌ Помилка при оформленні замовлення.");
     } finally {
       setLoading(false);
