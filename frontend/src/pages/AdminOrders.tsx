@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+
 import { getOrders, updateOrderStatus, getMenu, type Order, type MenuItem } from "../services/api";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import "./AdminOrders.scss";
 
 export const AdminOrders = () => {
@@ -9,36 +10,36 @@ export const AdminOrders = () => {
   const [menuItems, setMenuItems] = useState<Record<string, MenuItem>>({});
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const [ordersData, menuData] = await Promise.all([
-        getOrders(token),
-        getMenu()
-      ]);
-      
-      // Create a lookup object for menu items
-      const menuLookup = menuData.reduce((acc, item) => {
-        acc[item._id!] = item;
-        return acc;
-      }, {} as Record<string, MenuItem>);
-      
-      setOrders(ordersData);
-      setMenuItems(menuLookup);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = useCallback(async () => {
+  if (!token) return;
+  setLoading(true);
+  try {
+    const [ordersData, menuData] = await Promise.all([
+      getOrders(token),
+      getMenu(),
+    ]);
+
+    const menuLookup = menuData.reduce((acc, item) => {
+      acc[item._id!] = item;
+      return acc;
+    }, {} as Record<string, MenuItem>);
+
+    setOrders(ordersData);
+    setMenuItems(menuLookup);
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+  } finally {
+    setLoading(false);
+  }
+}, [token]);
+
 
   useEffect(() => {
-    fetchData();
-    // Set up auto-refresh every 30 seconds
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, [token]);
+  fetchData();
+  const interval = setInterval(fetchData, 30000);
+  return () => clearInterval(interval);
+}, [fetchData]);
+
 
   const handleStatusChange = async (id: string, status: Order["status"]) => {
     if (!token) return;

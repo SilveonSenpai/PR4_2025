@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getOrdersByPhone, type Order, type MenuItem } from "../services/api";
 import "./myOrders.scss";
 
@@ -7,25 +7,27 @@ export const MyOrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchOrders = async () => {
-    if (!phone.trim()) return;
-    setLoading(true);
-    try {
-      const data = await getOrdersByPhone(phone);
-      setOrders(data);
-    } catch (err) {
-      console.error("Помилка при завантаженні замовлень", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchOrders = useCallback(async () => {
+  if (!phone.trim()) return;
+  setLoading(true);
+  try {
+    const data = await getOrdersByPhone(phone);
+    setOrders(data);
+  } catch (err) {
+    console.error("Помилка при завантаженні замовлень", err);
+  } finally {
+    setLoading(false);
+  }
+}, [phone]);
+
 
   // автооновлення замовлень кожні 10 сек
   useEffect(() => {
-    if (!phone) return;
-    const interval = setInterval(fetchOrders, 10000);
-    return () => clearInterval(interval);
-  }, [phone]);
+  if (!phone) return;
+  const interval = setInterval(fetchOrders, 10000);
+  return () => clearInterval(interval);
+}, [phone, fetchOrders]);
+
 
   return (
     <div>

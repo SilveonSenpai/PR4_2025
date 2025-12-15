@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getMenu } from "../services/api";
 import type { MenuItem } from "../services/api";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 import "./MenuPage.scss";
 
 export const MenuPage = () => {

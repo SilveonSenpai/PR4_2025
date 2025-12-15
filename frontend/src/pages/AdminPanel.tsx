@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   getMenu,
   createMenuItem,
@@ -6,7 +6,7 @@ import {
   deleteMenuItem,
   type MenuItem,
 } from "../services/api";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { AdminOrders } from "./AdminOrders";
 import "./AdminPanel.scss";
 
@@ -26,22 +26,24 @@ export const AdminPanelPage = () => {
 
   const [form, setForm] = useState<MenuItem>(initialForm);
 
-  const fetchMenu = async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const data = await getMenu();
-      setMenu(data);
-    } catch (error) {
-      console.error("Failed to fetch menu:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchMenu = useCallback(async () => {
+  if (!token) return;
+  setLoading(true);
+  try {
+    const data = await getMenu();
+    setMenu(data);
+  } catch (error) {
+    console.error("Failed to fetch menu:", error);
+  } finally {
+    setLoading(false);
+  }
+}, [token]);
 
-  useEffect(() => {
-    fetchMenu();
-  }, [token]);
+
+ useEffect(() => {
+  fetchMenu();
+}, [fetchMenu]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -4,7 +4,7 @@ import { MenuPage } from "./pages/MenuPage";
 import { CartPage } from "./pages/CartPage";
 import { AdminLoginPage } from "./pages/AdminLogin";
 import { AdminPanelPage } from "./pages/AdminPanel";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/authProvider";
 import  ProtectedRoute  from "./components/ProtectedRoute";
 import { MyOrdersPage } from "./pages/myOrders";
 import "./App.scss";

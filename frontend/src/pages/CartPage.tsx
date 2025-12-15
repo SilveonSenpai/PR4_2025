@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/useCart";
 import { createOrder } from "../services/api";
 import { Link } from "react-router-dom";
 import "./CartPage.scss";
