@@ -30,9 +30,10 @@ export const CartPage = () => {
     e.preventDefault();
 
     if (!isValidUAPhone(formData.phone)) {
-  postMessage("❌ Введіть коректний номер телефону у форматі +380XXXXXXXXX");
+  showToast("Введіть коректний номер телефону", "error");
   return;
 }
+
 
 
     if (cart.length === 0) {
@@ -130,26 +131,30 @@ export const CartPage = () => {
         </div>
 
         <form onSubmit={handleOrder} className="checkout-form">
-          <input
+                    <input
             type="text"
             placeholder="Ваше ім'я"
             value={formData.name}
+            disabled={loading}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, name: e.target.value }))
             }
             required
           />
+
           <input
-  type="tel"
-  placeholder="+380 XX XXX XX XX"
-  value={formatPhoneDisplay(formData.phone)}
-  onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      phone: normalizePhone(e.target.value),
-    }))
-  }
-/>
+            type="tel"
+            placeholder="+380 XX XXX XX XX"
+            value={formatPhoneDisplay(formData.phone)}
+            disabled={loading}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                phone: normalizePhone(e.target.value),
+              }))
+            }
+          />
+
 
 
           <button type="submit" disabled={loading}>
