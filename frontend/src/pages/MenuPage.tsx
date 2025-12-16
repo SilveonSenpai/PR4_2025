@@ -3,8 +3,10 @@ import { getMenu } from "../services/api";
 import type { MenuItem } from "../services/api";
 import { useCart } from "../context/useCart";
 import "./MenuPage.scss";
+import { useToast } from "../context/useToast";
 
 export const MenuPage = () => {
+  const { showToast } = useToast();
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,19 +14,21 @@ export const MenuPage = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const data = await getMenu();
-        setMenu(data);
-      } catch (err) {
-        setError("Не вдалося завантажити меню ☹️");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchMenu = async () => {
+    try {
+      const data = await getMenu();
+      setMenu(data);
+    } catch {
+      showToast("Не вдалося завантажити меню", "error");
+      setError("Помилка завантаження");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchMenu();
-  }, []);
+  fetchMenu();
+}, [showToast]);
+
 
   if (loading)
     return (

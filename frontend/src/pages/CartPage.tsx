@@ -3,11 +3,19 @@ import { useCart } from "../context/useCart";
 import { createOrder } from "../services/api";
 import { Link } from "react-router-dom";
 import "./CartPage.scss";
+import { useToast } from "../context/useToast";
+import {
+  normalizePhone,
+  isValidUAPhone,
+  formatPhoneDisplay,
+} from "../utils/phone";
+
+
 
 export const CartPage = () => {
+  const { showToast } = useToast();
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -19,45 +27,42 @@ export const CartPage = () => {
   );
 
   const handleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    if (!formData.name.trim() || !formData.phone.trim()) {
-      setMessage("Будь ласка, заповніть усі поля!");
-      return;
-    }
+    if (!isValidUAPhone(formData.phone)) {
+  postMessage("❌ Введіть коректний номер телефону у форматі +380XXXXXXXXX");
+  return;
+}
+
+
     if (cart.length === 0) {
-      setMessage("Ваш кошик порожній!");
+      showToast("Кошик порожній", "info");
       return;
     }
 
     try {
-      setLoading(true);
+  setLoading(true);
 
-      const payload = {
-        customerName: formData.name,
-        customerPhone: formData.phone,
-        items: cart.map((ci) => ({
-          menuId: ci.menuItem._id!,
-          quantity: ci.quantity,
-        })),
-        status: "new" as const,
-      };
+  const payload = {
+    customerName: formData.name,
+    customerPhone: formData.phone,
+    items: cart.map((ci) => ({
+      menuId: ci.menuItem._id!,
+      quantity: ci.quantity,
+    })),
+    status: "new" as const,
+  };
 
-      const response = await createOrder(payload);
+  await createOrder(payload);
 
-      if (!response) {
-        throw new Error("Failed to create order");
-      }
-
-      setMessage("✅ Замовлення успішно оформлене!");
-      clearCart();
-      setFormData({ name: "", phone: "" });
-    } catch (err) {
-      console.error("Order creation error:", err);
-      setMessage("❌ Помилка при оформленні замовлення.");
-    } finally {
-      setLoading(false);
-    }
+  showToast("Замовлення оформлено", "success");
+  clearCart();
+  setFormData({ name: "", phone: "" });
+} catch {
+  showToast("Помилка при оформленні замовлення", "error");
+} finally {
+  setLoading(false);
+}
   };
 
   if (cart.length === 0) {
@@ -135,14 +140,18 @@ export const CartPage = () => {
             required
           />
           <input
-            type="tel"
-            placeholder="Номер телефону"
-            value={formData.phone}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, phone: e.target.value }))
-            }
-            required
-          />
+  type="tel"
+  placeholder="+380 XX XXX XX XX"
+  value={formatPhoneDisplay(formData.phone)}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      phone: normalizePhone(e.target.value),
+    }))
+  }
+/>
+
+
           <button type="submit" disabled={loading}>
             {loading ? "Обробка..." : "Оформити замовлення"}
           </button>

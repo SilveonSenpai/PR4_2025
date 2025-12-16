@@ -3,26 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../services/api";
 import { useAuth } from "../context/useAuth";
 import "./AdminLogin.scss";
+import { useToast } from "../context/useToast";
 
 export const AdminLoginPage = () => {
   const { login } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+
     try {
       setLoading(true);
       const { token } = await loginAdmin(email, password);
-      login(token); // збереження токена в AuthContext
-      navigate("/admin"); // редірект у адмін панель
-    } catch (err) {
-      setError("❌ Невірний email або пароль");
+      login(token);
+      showToast("Успішний вхід", "success");
+      navigate("/admin");
+    } catch {
+      showToast("Невірний email або пароль", "error");
     } finally {
       setLoading(false);
     }
@@ -64,9 +66,6 @@ export const AdminLoginPage = () => {
           {loading ? "Вхід..." : "Увійти"}
         </button>
 
-        {error && (
-          <p className="mt-3 text-red-500 text-center text-sm">{error}</p>
-        )}
       </form>
     </div>
   );

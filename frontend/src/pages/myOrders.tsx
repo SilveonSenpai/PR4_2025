@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { getOrdersByPhone, type Order, type MenuItem } from "../services/api";
 import "./myOrders.scss";
+import { normalizePhone, isValidUAPhone, formatPhoneDisplay } from "../utils/phone";
+
 
 export const MyOrdersPage = () => {
   const [phone, setPhone] = useState("");
@@ -15,6 +17,11 @@ export const MyOrdersPage = () => {
     setOrders(data);
   } catch (err) {
     console.error("Помилка при завантаженні замовлень", err);
+    if (!isValidUAPhone(phone)) {
+  console.warn("Некоректний номер телефону");
+  return;
+}
+
   } finally {
     setLoading(false);
   }
@@ -36,12 +43,13 @@ export const MyOrdersPage = () => {
       {/* форма пошуку */}
       <div className="mb-4 flex gap-2">
         <input
-          type="text"
-          placeholder="Введіть номер телефону"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="border rounded px-3 py-2 flex-1"
-        />
+  type="tel"
+  placeholder="+380 XX XXX XX XX"
+  value={formatPhoneDisplay(phone)}
+  onChange={(e) => setPhone(normalizePhone(e.target.value))}
+  className="border rounded px-3 py-2 flex-1"
+/>
+
         <button
           onClick={fetchOrders}
           className="bg-blue-600 text-white px-4 py-2 rounded"

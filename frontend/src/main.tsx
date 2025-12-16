@@ -4,14 +4,18 @@ import App from "./App";
 import "./index.css";
 import { AuthProvider } from "./context/authProvider";
 import { CartProvider } from "./context/cartProvider";
+import { ToastProvider } from "./context/ToastProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </AuthProvider>
+    </ToastProvider>
   </React.StrictMode>
 );
+
 
