@@ -2,7 +2,8 @@
 @import "../styles/mixins";
 
 .menu-page {
-  @include container;
+  width: 100%;
+  box-sizing: border-box;
 
   .menu-grid {
     display: grid;

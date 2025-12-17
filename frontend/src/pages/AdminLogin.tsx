@@ -42,6 +42,7 @@ export const AdminLoginPage = () => {
 
         <input
           type="email"
+          disabled={loading}
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -51,6 +52,7 @@ export const AdminLoginPage = () => {
 
         <input
           type="password"
+          disabled={loading}
           placeholder="Пароль"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

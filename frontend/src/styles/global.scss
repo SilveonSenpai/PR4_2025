@@ -2,13 +2,29 @@
 @import "mixins";
 
 // Reset & Base styles
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 body {
   background: $secondary-color;
   color: #333;
   font-family: $font-main;
   font-size: $font-size-base;
-  margin: 0;
   line-height: 1.5;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 // Typography
@@ -48,6 +64,9 @@ a {
 }
 
 // Layout
+.p-4 {
+  padding: 1rem;
+}
 .container {
   @include container;
 }
