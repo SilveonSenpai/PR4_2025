@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: coffee-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    depends_on:
+      mongo:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongo:
+    image: mongo:7
+    container_name: coffee-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    command: mongod --wiredTigerCacheSizeGB 0.5
+
+volumes:
+  mongo_data:

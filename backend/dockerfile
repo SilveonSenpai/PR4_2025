@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# копіюємо тільки package.json + lock
+COPY package*.json ./
+
+# встановлюємо залежності ВСЕРЕДИНІ контейнера
+RUN npm install
+
+# копіюємо решту коду
+COPY . .
+
+# збірка TypeScript
+RUN npm run build
+
+EXPOSE 4000
+
+CMD ["npm", "start"]

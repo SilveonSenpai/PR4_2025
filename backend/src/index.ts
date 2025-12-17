@@ -10,11 +10,8 @@ import { errorHandler } from './middleware/errorHandler';
 dotenv.config();
 const app = express();
 
-
 app.use(cors());
 app.use(express.json());
-
-connectDB();
 
 // Routes
 app.use('/api/menu', menuRoutes);
@@ -27,5 +24,21 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 // error handler (last middleware)
 app.use(errorHandler);
 
-app.listen(4000, "0.0.0.0", () => console.log("Server running on port 4000"));
+const PORT = Number(process.env.PORT) || 4000;
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+
 
