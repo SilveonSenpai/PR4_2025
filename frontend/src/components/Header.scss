@@ -86,3 +86,28 @@
     }
   }
 }
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    padding: $spacing-sm $spacing-md;
+    row-gap: $spacing-sm;
+  }
+
+  .header__logo {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .header__nav {
+    flex: 1 1 100%;
+    justify-content: center;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  .header__actions {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
