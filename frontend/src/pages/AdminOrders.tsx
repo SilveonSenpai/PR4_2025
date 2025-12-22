@@ -1,7 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-
-import { getOrders, updateOrderStatus, getMenu, type Order, type MenuItem } from "../services/api";
+import {
+  getOrders,
+  updateOrderStatus,
+  getMenu,
+  type Order,
+  type MenuItem,
+} from "../services/api";
 import { useAuth } from "../context/useAuth";
+import { AdminOrderCard } from "../components/order/AdminorderCard";
 import "./AdminOrders.scss";
 
 export const AdminOrders = () => {
@@ -11,40 +17,38 @@ export const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-  if (!token) return;
-  setLoading(true);
-  try {
-    const [ordersData, menuData] = await Promise.all([
-      getOrders(token),
-      getMenu(),
-    ]);
+    if (!token) return;
+    setLoading(true);
+    try {
+      const [ordersData, menuData] = await Promise.all([
+        getOrders(token),
+        getMenu(),
+      ]);
 
-    const menuLookup = menuData.reduce((acc, item) => {
-      acc[item._id!] = item;
-      return acc;
-    }, {} as Record<string, MenuItem>);
+      const menuLookup = menuData.reduce((acc, item) => {
+        acc[item._id!] = item;
+        return acc;
+      }, {} as Record<string, MenuItem>);
 
-    setOrders(ordersData);
-    setMenuItems(menuLookup);
-  } catch (error) {
-    console.error("Failed to fetch data:", error);
-  } finally {
-    setLoading(false);
-  }
-}, [token]);
-
+      setOrders(ordersData);
+      setMenuItems(menuLookup);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-  fetchData();
-  const interval = setInterval(fetchData, 30000);
-  return () => clearInterval(interval);
-}, [fetchData]);
-
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const handleStatusChange = async (id: string, status: Order["status"]) => {
-    if (!token) return;
+    if (!token || !status) return;
     try {
-      await updateOrderStatus(id, status!, token);
+      await updateOrderStatus(id, status, token);
       fetchData();
     } catch (error) {
       console.error("Failed to update order status:", error);
@@ -53,17 +57,16 @@ export const AdminOrders = () => {
 
   const formatDate = (orderId: string) => {
     try {
-      // Convert hex timestamp to decimal and multiply by 1000 for milliseconds
       const timestamp = parseInt(orderId.substring(0, 8), 16) * 1000;
-      return new Date(timestamp).toLocaleString('uk-UA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      return new Date(timestamp).toLocaleString("uk-UA", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch {
-      return 'Дата невідома';
+      return "Дата невідома";
     }
   };
 
@@ -82,48 +85,16 @@ export const AdminOrders = () => {
       ) : (
         <div className="orders-list">
           {orders.map((order) => (
-            <div key={order._id} className="order-card">
-              <div className="order-header">
-                <div className="customer-info">
-                  <h3>{order.customerName}</h3>
-                  <span className="phone">{order.customerPhone}</span>
-                </div>
-                <span className="order-date">
-                  {formatDate(order._id!)}
-                </span>
-              </div>
-
-              <ul className="items-list">
-                {order.items.map((item, idx) => (
-                  <li key={idx}>
-                    <span>{menuItems[String(item.menuId)]?.name || 'Товар видалено'}</span>
-                    <span>× {item.quantity}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="status-control">
-                <span className="status-label">Статус замовлення:</span>
-                <select
-                  value={order.status}
-                  onChange={(e) =>
-                    handleStatusChange(
-                      order._id!,
-                      e.target.value as Order["status"]
-                    )
-                  }
-                  className={order.status}
-                >
-                  <option value="new">Нове</option>
-                  <option value="in_progress">В обробці</option>
-                  <option value="done">Виконано</option>
-                </select>
-              </div>
-            </div>
+            <AdminOrderCard
+              key={order._id}
+              order={order}
+              menuLookup={menuItems}
+              formattedDate={formatDate(order._id!)}
+              onStatusChange={handleStatusChange}
+            />
           ))}
         </div>
       )}
     </div>
   );
 };
-
