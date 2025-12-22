@@ -1,3 +1,4 @@
+
 .order-card {
   border-radius: 12px;
   padding: 16px;
@@ -34,4 +35,9 @@
 .order-items {
   font-size: 14px;
   padding-left: 16px;
+}
+.order-date {
+  font-size: 0.85rem;
+  color: #777;
+  white-space: nowrap;
 }

@@ -1,4 +1,6 @@
 import type { Order, MenuItem } from "../../services/api";
+import "./OrderCard.scss";
+
 
 interface Props {
   order: Order;
