@@ -10,24 +10,24 @@ export const MenuPage = () => {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
-  const fetchMenu = async () => {
-    try {
-      const data = await getMenu();
-      setMenu(data);
-    } catch {
-      showToast("Не вдалося завантажити меню", "error");
-      setError("Помилка завантаження");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchMenu = async () => {
+      try {
+        const data = await getMenu();
+        setMenu(data);
+      } catch {
+        showToast("Не вдалося завантажити меню", "error");
+        setError("Помилка завантаження");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchMenu();
-}, [showToast]);
+    fetchMenu();
+  }, [showToast]);
 
 
   if (loading)
@@ -60,11 +60,17 @@ export const MenuPage = () => {
               <div className="item-footer">
                 <span className="price">{item.price} грн</span>
                 <button
-                  onClick={() => addToCart(item)}
+                  onClick={() => {
+                    addToCart(item);
+                    showToast(`"${item.name}" додано до кошика`, "success");
+                    setJustAddedId(item._id!);
+                    setTimeout(() => setJustAddedId(null), 400);
+                  }}
                   className="add-to-cart"
                   aria-label={`Add ${item.name} to cart`}
+                  disabled={justAddedId === item._id}
                 >
-                  Додати до кошика
+                  {justAddedId === item._id ? "✔ Додано" : "Додати до кошика"}
                 </button>
               </div>
             </div>
