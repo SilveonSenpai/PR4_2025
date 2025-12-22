@@ -1,5 +1,5 @@
 import type { Order, MenuItem } from "../../services/api";
-import "./OrderCard.scss";
+import "./orderCard.scss";
 
 
 interface Props {
