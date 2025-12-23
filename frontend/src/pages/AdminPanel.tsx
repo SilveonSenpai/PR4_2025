@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../context/useAuth";
 import { AdminOrders } from "./AdminOrders";
 import "./AdminPanel.scss";
+import { logger } from "../utils/logger";
 
 export const AdminPanelPage = () => {
   const { token } = useAuth();
@@ -33,7 +34,7 @@ export const AdminPanelPage = () => {
     const data = await getMenu();
     setMenu(data);
   } catch (error) {
-    console.error("Failed to fetch menu:", error);
+    logger.error("Failed to fetch menu:", error);
   } finally {
     setLoading(false);
   }
@@ -60,7 +61,7 @@ export const AdminPanelPage = () => {
       setEditingItem(null);
       await fetchMenu();
     } catch (error) {
-      console.error("Failed to save item:", error);
+      logger.error("Failed to save item:", error);
     } finally {
       setLoading(false);
     }
@@ -78,7 +79,7 @@ export const AdminPanelPage = () => {
       await deleteMenuItem(id, token);
       await fetchMenu();
     } catch (error) {
-      console.error("Failed to delete item:", error);
+      logger.error("Failed to delete item:", error);
     } finally {
       setLoading(false);
     }

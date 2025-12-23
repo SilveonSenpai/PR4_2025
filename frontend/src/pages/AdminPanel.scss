@@ -254,3 +254,35 @@
     }
   }
 }
+@media (max-width: 768px) {
+  .admin-panel {
+    padding: $spacing-lg 0;
+
+    .tabs {
+      flex-direction: column;
+
+      button {
+        max-width: 100%;
+      }
+    }
+
+    .menu-section {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-lg;
+    }
+
+    .item-form {
+      position: static; // КРИТИЧНО
+      order: 1;
+    }
+
+    .menu-items {
+      order: 2;
+    }
+
+    .menu-grid {
+      grid-template-columns: 1fr; // одна карточка на ряд
+    }
+  }
+}

@@ -4,6 +4,7 @@ import type { MenuItem } from "../services/api";
 import { useCart } from "../context/useCart";
 import "./MenuPage.scss";
 import { useToast } from "../context/useToast";
+import { logger } from "../utils/logger";
 
 export const MenuPage = () => {
   const { showToast } = useToast();
@@ -21,6 +22,7 @@ export const MenuPage = () => {
       } catch {
         showToast("Не вдалося завантажити меню", "error");
         setError("Помилка завантаження");
+        logger.error("Не вдалося завантажити меню");
       } finally {
         setLoading(false);
       }

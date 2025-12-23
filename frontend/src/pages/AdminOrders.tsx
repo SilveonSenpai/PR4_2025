@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../context/useAuth";
 import { AdminOrderCard } from "../components/order/AdminorderCard";
 import "./AdminOrders.scss";
+import { logger } from "../utils/logger";
 
 export const AdminOrders = () => {
   const { token } = useAuth();
@@ -40,7 +41,7 @@ export const AdminOrders = () => {
       setOrders(ordersData);
       setMenuItems(menuLookup);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      logger.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
     }
@@ -65,7 +66,7 @@ export const AdminOrders = () => {
     try {
       await updateOrderStatus(id, status, token);
     } catch (error) {
-      console.error("Failed to update order status:", error);
+      logger.error("Failed to update order status:", error);
 
       // 2️⃣ rollback у разі помилки
       fetchData();

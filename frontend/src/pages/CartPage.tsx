@@ -9,6 +9,7 @@ import {
   isValidUAPhone,
   formatPhoneDisplay,
 } from "../utils/phone";
+import { logger } from "../utils/logger";
 
 
 
@@ -61,6 +62,7 @@ export const CartPage = () => {
   setFormData({ name: "", phone: "" });
 } catch {
   showToast("Помилка при оформленні замовлення", "error");
+  logger.error("Помилка при оформленні замовлення");
 } finally {
   setLoading(false);
 }

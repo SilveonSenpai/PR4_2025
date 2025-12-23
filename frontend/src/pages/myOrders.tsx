@@ -3,7 +3,7 @@ import { getOrdersByPhone, type Order } from "../services/api";
 import "./myOrders.scss";
 import { normalizePhone, isValidUAPhone, formatPhoneDisplay } from "../utils/phone";
 import { UserOrderCard } from "../components/order/UserOrderCard";
-
+import { logger } from "../utils/logger";
 
 export const MyOrdersPage = () => {
   const [phone, setPhone] = useState("");
@@ -17,9 +17,9 @@ export const MyOrdersPage = () => {
       const data = await getOrdersByPhone(phone);
       setOrders(data);
     } catch (err) {
-      console.error("Помилка при завантаженні замовлень", err);
+      logger.error("Помилка при завантаженні замовлень", err);
       if (!isValidUAPhone(phone)) {
-        console.warn("Некоректний номер телефону");
+        logger.warn("Некоректний номер телефону");
         return;
       }
 
