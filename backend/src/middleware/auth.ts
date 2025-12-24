@@ -11,7 +11,6 @@ export const adminAuth = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET) as any;
-    // attach admin info to req
     (req as any).admin = { id: payload.adminId, email: payload.email };
     next();
   } catch (err) {

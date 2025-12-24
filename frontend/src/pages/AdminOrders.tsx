@@ -56,7 +56,7 @@ export const AdminOrders = () => {
   const handleStatusChange = async (id: string, status: Order["status"]) => {
     if (!token || !status) return;
 
-    // 1️⃣ optimistic update
+    // 1 optimistic update
     setOrders((prev) =>
       prev.map((order) =>
         order._id === id ? { ...order, status } : order
@@ -68,7 +68,7 @@ export const AdminOrders = () => {
     } catch (error) {
       logger.error("Failed to update order status:", error);
 
-      // 2️⃣ rollback у разі помилки
+      // 2 rollback у разі помилки
       fetchData();
     }
   };
